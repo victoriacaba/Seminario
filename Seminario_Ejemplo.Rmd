@@ -1,7 +1,7 @@
 ---
 title: "Seminario Asignatura"
 subtitle: "Bases de Datos"
-author: "Carla Güemes Dai y Victoria Caba"
+author: "Antonio Canepa"
 date: "`r Sys.Date()`"
 output: 
   html_document:
@@ -26,7 +26,7 @@ con <- dbConnect(RPostgres::Postgres(),
                  host = "localhost",           # Dirección del host
                  port = 5432,                  # Puerto de PostgreSQL
                  user = "postgres",          # Tu usuario de PostgreSQL
-                 password = "postgres")   # Tu contraseña de PostgreSQL
+                 password = "Perseidas13.")   # Tu contraseña de PostgreSQL
 ```
 
 # Idea de Seminario
@@ -88,30 +88,114 @@ Código del seminario
 
 ### Creación de tablas
 
-#### **Tabla pacientes**
+#### **Tabla Cadena de ARN**
 
-Contendrá los datos de los pacientes.
+Contendrá los datos de la cadena de ARN
 
 ```{r, warning=FALSE, message=FALSE}
-# Crear tabla 'pacientes'
+# Crear tabla 'Cadena de ARN'
 dbExecute(con, "
-CREATE TABLE pacientes (
-    id_paciente SERIAL PRIMARY KEY,
-    nombre VARCHAR(100),
-    edad INTEGER CHECK (edad >= 0), -- La edad no puede ser negativa
-    genero VARCHAR(10) CHECK (genero IN ('Masculino', 'Femenino', 'Otro')), -- Género debe ser uno de estos valores
-    peso DECIMAL(5,2) CHECK (peso > 0), -- Peso debe ser mayor a 0
-    altura DECIMAL(4,2) CHECK (altura > 0) -- Altura debe ser mayor a 0
+CREATE TABLE Cadena de ARN (
+    Cadena_ARN SERIAL PRIMARY KEY,
+    Primer nucleótido Char(1),
+    Segundo nucleótido Char (1)
+    Tercer nucleótido Char(1)
+    Codón Char(5)
 );
 ")
 ```
+```
+
 
 Ahora agregamos los datos de los pacientes
 
 ```{r, warning=FALSE, message=FALSE}
-# Insertar datos en 'pacientes'
 dbExecute(con, "
-INSERT INTO pacientes (nombre, edad, genero, peso, altura) 
+INSERT INTO \"Cadena de ADN\"
+(\"Primer nucleótido\", \"Segundo nucleótido\", \"Tercer nucleótido\", \"Codón\")
+VALUES
+('U','U','U','UUU'),
+('U','U','C','UUC'),
+('U','U','A','UUA'),
+('U','U','G','UUG'),
+
+('U','C','U','UCU'),
+('U','C','C','UCC'),
+('U','C','A','UCA'),
+('U','C','G','UCG'),
+
+('U','A','U','UAU'),
+('U','A','C','UAC'),
+('U','A','A','UAA'),
+('U','A','G','UAG'),
+
+('U','G','U','UGU'),
+('U','G','C','UGC'),
+('U','G','A','UGA'),
+('U','G','G','UGG'),
+
+('C','U','U','CUU'),
+('C','U','C','CUC'),
+('C','U','A','CUA'),
+('C','U','G','CUG'),
+
+('C','C','U','CCU'),
+('C','C','C','CCC'),
+('C','C','A','CCA'),
+('C','C','G','CCG'),
+
+('C','A','U','CAU'),
+('C','A','C','CAC'),
+('C','A','A','CAA'),
+('C','A','G','CAG'),
+
+('C','G','U','CGU'),
+('C','G','C','CGC'),
+('C','G','A','CGA'),
+('C','G','G','CGG'),
+
+('A','U','U','AUU'),
+('A','U','C','AUC'),
+('A','U','A','AUA'),
+('A','U','G','AUG'),
+
+('A','C','U','ACU'),
+('A','C','C','ACC'),
+('A','C','A','ACA'),
+('A','C','G','ACG'),
+
+('A','A','U','AAU'),
+('A','A','C','AAC'),
+('A','A','A','AAA'),
+('A','A','G','AAG'),
+
+('A','G','U','AGU'),
+('A','G','C','AGC'),
+('A','G','A','AGA'),
+('A','G','G','AGG'),
+
+('G','U','U','GUU'),
+('G','U','C','GUC'),
+('G','U','A','GUA'),
+('G','U','G','GUG'),
+
+('G','C','U','GCU'),
+('G','C','C','GCC'),
+('G','C','A','GCA'),
+('G','C','G','GCG'),
+
+('G','A','U','GAU'),
+('G','A','C','GAC'),
+('G','A','A','GAA'),
+('G','A','G','GAG'),
+
+('G','G','U','GGU'),
+('G','G','C','GGC'),
+('G','G','A','GGA'),
+('G','G','G','GGG');
+")
+#dbExecute(con, "
+#INSERT INTO pacientes (nombre, edad, genero, peso, altura) 
 VALUES 
     ('Juan Pérez', 45, 'Masculino', 80.5, 1.75),
     ('Ana López', 30, 'Femenino', 65.3, 1.68),
@@ -146,19 +230,19 @@ Ahora agregamos valores a las tablas de consultas
 
 ```{r, warning=FALSE, message=FALSE}
 # Insertar datos en 'consultas'
-dbExecute(con, "
-INSERT INTO consultas (id_paciente, fecha, diagnostico) 
-VALUES 
-    (1, '2024-01-10', 'Hipertensión'),
-    (2, '2024-02-15', 'Diabetes Tipo 2'),
-    (3, '2024-03-01', 'Insuficiencia Cardíaca');
-")
+#dbExecute(con, "
+#INSERT INTO consultas (id_paciente, fecha, diagnostico) 
+#VALUES 
+#   (1, '2024-01-10', 'Hipertensión'),
+#  (2, '2024-02-15', 'Diabetes Tipo 2'),
+# (3, '2024-03-01', 'Insuficiencia Cardíaca');
+#")
 ```
 
 Mostramos la tabla
 
 ```{sql, connection=con}
-SELECT * FROM consultas; 
+SELECT * FROM Cadena de ARN; 
 ```
 
 #### **Tabla tratamientos**
