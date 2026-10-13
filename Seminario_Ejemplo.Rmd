@@ -1,7 +1,7 @@
 ---
 title: "Seminario Asignatura"
 subtitle: "Bases de Datos"
-author: "Antonio Canepa"
+author: "Carla Güemes Dai & Victoria Caba"
 date: "`r Sys.Date()`"
 output: 
   html_document:
@@ -26,7 +26,7 @@ con <- dbConnect(RPostgres::Postgres(),
                  host = "localhost",           # Dirección del host
                  port = 5432,                  # Puerto de PostgreSQL
                  user = "postgres",          # Tu usuario de PostgreSQL
-                 password = "Perseidas13.")   # Tu contraseña de PostgreSQL
+                 password = "postgres")   # Tu contraseña de PostgreSQL
 ```
 
 # Idea de Seminario
@@ -88,126 +88,178 @@ Código del seminario
 
 ### Creación de tablas
 
-#### **Tabla Cadena de ARN**
+#### **Referencia Cadena de ARN**
 
-Contendrá los datos de la cadena de ARN
+Contendrá los datos de la cadena de ARN con su nombre
+
+```{r, message = FALSE, warning=FALSE}
+dbExecute(con,"
+          drop table if exists cadena_ARN;")
+```
 
 ```{r, warning=FALSE, message=FALSE}
-# Crear tabla 'Cadena de ARN'
+# Crear tabla 'Cadena_ARN'
 dbExecute(con, "
-CREATE TABLE Cadena de ARN (
-    Cadena_ARN SERIAL PRIMARY KEY,
-    Primer nucleótido Char(1),
-    Segundo nucleótido Char (1)
-    Tercer nucleótido Char(1)
+CREATE TABLE Cadena_ARN (
+   
+    Primer_nucleótido Char(1),
+    Segundo_nucleótido Char (1),
+    Tercer_nucleótido Char(1),
+    ARN char(3) PRIMARY KEY,
     Codón Char(5)
 );
 ")
 ```
-```
-
-
-Ahora agregamos los datos de los pacientes
+Añadimos tuplas
 
 ```{r, warning=FALSE, message=FALSE}
 dbExecute(con, "
-INSERT INTO \"Cadena de ADN\"
-(\"Primer nucleótido\", \"Segundo nucleótido\", \"Tercer nucleótido\", \"Codón\")
+INSERT INTO Cadena_ARN
+(Primer_nucleótido, Segundo_nucleótido, Tercer_nucleótido, ARN, codón)
 VALUES
-('U','U','U','UUU'),
-('U','U','C','UUC'),
-('U','U','A','UUA'),
-('U','U','G','UUG'),
+('U','U','U','UUU','Phe'),
+('U','U','C','UUC','Phe'),
+('U','U','A','UUA','Leu'),
+('U','U','G','UUG','Leu'),
 
-('U','C','U','UCU'),
-('U','C','C','UCC'),
-('U','C','A','UCA'),
-('U','C','G','UCG'),
+('U','C','U','UCU','Ser'),
+('U','C','C','UCC','Ser'),
+('U','C','A','UCA','Ser'),
+('U','C','G','UCG','Ser'),
 
-('U','A','U','UAU'),
-('U','A','C','UAC'),
-('U','A','A','UAA'),
-('U','A','G','UAG'),
+('U','A','U','UAU','Tyr'),
+('U','A','C','UAC','Tyr'),
+('U','A','A','UAA','STOP'),
+('U','A','G','UAG','STOP'),
 
-('U','G','U','UGU'),
-('U','G','C','UGC'),
-('U','G','A','UGA'),
-('U','G','G','UGG'),
+('U','G','U','UGU','Cys'),
+('U','G','C','UGC','Cys'),
+('U','G','A','UGA','STOP'),
+('U','G','G','UGG','Trp'),
 
-('C','U','U','CUU'),
-('C','U','C','CUC'),
-('C','U','A','CUA'),
-('C','U','G','CUG'),
+('C','U','U','CUU','Leu'),
+('C','U','C','CUC','Leu'),
+('C','U','A','CUA','Leu'),
+('C','U','G','CUG','Leu'),
 
-('C','C','U','CCU'),
-('C','C','C','CCC'),
-('C','C','A','CCA'),
-('C','C','G','CCG'),
+('C','C','U','CCU','Pro'),
+('C','C','C','CCC','Pro'),
+('C','C','A','CCA','Pro'),
+('C','C','G','CCG','Pro'),
 
-('C','A','U','CAU'),
-('C','A','C','CAC'),
-('C','A','A','CAA'),
-('C','A','G','CAG'),
+('C','A','U','CAU','His'),
+('C','A','C','CAC','His'),
+('C','A','A','CAA','Gln'),
+('C','A','G','CAG','Gln'),
 
-('C','G','U','CGU'),
-('C','G','C','CGC'),
-('C','G','A','CGA'),
-('C','G','G','CGG'),
+('C','G','U','CGU','Arg'),
+('C','G','C','CGC','Arg'),
+('C','G','A','CGA','Arg'),
+('C','G','G','CGG','Arg'),
 
-('A','U','U','AUU'),
-('A','U','C','AUC'),
-('A','U','A','AUA'),
-('A','U','G','AUG'),
+('A','U','U','AUU','Ile'),
+('A','U','C','AUC','Ile'),
+('A','U','A','AUA','Ile'),
+('A','U','G','AUG','START'),
 
-('A','C','U','ACU'),
-('A','C','C','ACC'),
-('A','C','A','ACA'),
-('A','C','G','ACG'),
+('A','C','U','ACU','Thr'),
+('A','C','C','ACC','Thr'),
+('A','C','A','ACA','Thr'),
+('A','C','G','ACG','Thr'),
 
-('A','A','U','AAU'),
-('A','A','C','AAC'),
-('A','A','A','AAA'),
-('A','A','G','AAG'),
+('A','A','U','AAU','Asn'),
+('A','A','C','AAC','Asn'),
+('A','A','A','AAA','Lys'),
+('A','A','G','AAG','Lys'),
 
-('A','G','U','AGU'),
-('A','G','C','AGC'),
-('A','G','A','AGA'),
-('A','G','G','AGG'),
+('A','G','U','AGU','Ser'),
+('A','G','C','AGC','Ser'),
+('A','G','A','AGA','Arg'),
+('A','G','G','AGG','Arg'),
 
-('G','U','U','GUU'),
-('G','U','C','GUC'),
-('G','U','A','GUA'),
-('G','U','G','GUG'),
+('G','U','U','GUU','Val'),
+('G','U','C','GUC','Val'),
+('G','U','A','GUA','Val'),
+('G','U','G','GUG','Val'),
 
-('G','C','U','GCU'),
-('G','C','C','GCC'),
-('G','C','A','GCA'),
-('G','C','G','GCG'),
+('G','C','U','GCU','Ala'),
+('G','C','C','GCC','Ala'),
+('G','C','A','GCA','Ala'),
+('G','C','G','GCG','Ala'),
 
-('G','A','U','GAU'),
-('G','A','C','GAC'),
-('G','A','A','GAA'),
-('G','A','G','GAG'),
+('G','A','U','GAU','Asp'),
+('G','A','C','GAC','Asp'),
+('G','A','A','GAA','Glu'),
+('G','A','G','GAG','Glu'),
 
-('G','G','U','GGU'),
-('G','G','C','GGC'),
-('G','G','A','GGA'),
-('G','G','G','GGG');
-")
-#dbExecute(con, "
-#INSERT INTO pacientes (nombre, edad, genero, peso, altura) 
-VALUES 
-    ('Juan Pérez', 45, 'Masculino', 80.5, 1.75),
-    ('Ana López', 30, 'Femenino', 65.3, 1.68),
-    ('Carlos Martínez', 60, 'Masculino', 90.2, 1.80);
+('G','G','U','GGU','Gly'),
+('G','G','C','GGC','Gly'),
+('G','G','A','GGA','Gly'),
+('G','G','G','GGG','Gly')
+;
 ")
 ```
 
-Mostramos la tabla
+Mostramos la referencia
 
-```{sql, connection=con}
-SELECT * FROM pacientes; 
+```{r, message = FALSE, warning=FALSE}
+dbGetQuery(con,"
+         SELECT * FROM cadena_ARN; ")
+
 ```
+
+Referencia de codones
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con,"
+DROP TABLE IF EXISTS codones;
+          ")
+```
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con, "
+CREATE TABLE codones(
+
+  codon char(3) PRIMARY KEY,
+  nombre varchar(15) NOT NULL
+  
+)
+          ")
+```
+Añadimos las tuplas
+
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con, "
+INSERT INTO codones(codon, nombre)
+VALUES
+('Ala', 'Alanina'),
+('Arg', 'Arginina'),
+('Asn', 'Asparagina'),
+('Asp', 'Ácido aspártico'),
+('Cys', 'Cisteína'),
+('Gln', 'Glutamina'),
+('Glu', 'Ácido glutámico'),
+('Gly', 'Glicina'),
+('His', 'Histidina'),
+('Ile', 'Isoleucina'),
+('Leu', 'Leucina'),
+('Lys', 'Lisina'),
+('Met', 'Metionina'),
+('Phe', 'Fenilalanina'),
+('Pro', 'Prolina'),
+('Ser', 'Serina'),
+('Thr', 'Treonina'),
+('Trp', 'Triptófano'),
+('Tyr', 'Tirosina'),
+('Val', 'Valina');
+
+          ")
+```
+Mostramos la referencia
+```{r, message = FALSE, warning=FALSE}
+dbGetQuery(con,"
+         SELECT * FROM codones; ")
+
+```
+
 
 #### **Tabla consultas**
 
