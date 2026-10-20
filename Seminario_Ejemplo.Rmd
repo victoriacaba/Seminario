@@ -102,11 +102,11 @@ dbExecute(con,"
 dbExecute(con, "
 CREATE TABLE Cadena_ARN (
    
-    Primer_nucleótido Char(1),
-    Segundo_nucleótido Char (1),
-    Tercer_nucleótido Char(1),
+    Primer_nucleótido Char(1) not null,
+    Segundo_nucleótido Char (1) not null,
+    Tercer_nucleótido Char(1) not null,
     ARN char(3) PRIMARY KEY,
-    Codón Char(5)
+    Codón Char(5) not null
 );
 ")
 ```
@@ -259,7 +259,195 @@ dbGetQuery(con,"
          SELECT * FROM codones; ")
 
 ```
+Referncia enfermedades
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con,"
+DROP TABLE IF EXISTS enfermedades;
+          ")
+```
 
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con," 
+  CREATE TABLE enfermedades(
+  
+    patologia text PRIMARY KEY,
+    gen_Afectado char(2) NOT NULL,
+    numero_Mutaciones int
+    
+  ) 
+  "
+)
+```
+
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con, "
+INSERT INTO enfermedades(patologia, gen_Afectado, numero_Mutaciones)
+VALUES
+('Fibrosis quistica', '7', 1500),
+('Anemia falciforme', '11', 320),
+('Hemofilia A', 'X', 900),
+('Enfermedad de Huntington', '4', 45),
+('Distrofia muscular', 'X', 210),
+('Fenilcetonuria', '12', 120),
+('Talasemia', '11', 450),
+('Albinismo', '11', 180),
+('Sindrome de Marfan', '15', 95),
+('Atrofia muscular espinal', '5', 275),
+('Daltonismo', 'X', 80),
+('Hipertricosis auricular', 'Y', 12),
+('Sindrome de Down', '21', 250),
+('Sindrome de Edwards', '18', 180),
+('Sindrome de Patau', '13', 95),
+('Sindrome de Turner', 'X', 120),
+('Sindrome de Klinefelter', 'X', 85),
+('Distrofia muscular de Duchenne', 'X', 350),
+('Hemofilia B', 'X', 140),
+('Ictiosis ligada al X', 'X', 75),
+('Deficiencia de G6PD', 'X', 200),
+('Neurofibromatosis tipo 1', '17', 280),
+('Enfermedad de Tay-Sachs', '15', 110),
+('Sindrome de Ehlers-Danlos', '2', 190),
+('Esclerosis tuberosa', '9', 160),
+('Enfermedad de Wilson', '13', 130),
+('Retinoblastoma', '13', 220),
+('Poliquistosis renal', '16', 170),
+('Sindrome de Angelman', '15', 90),
+('Sindrome de Prader-Willi', '15', 105),
+('Leucodistrofia metacromatica', '22', 145),
+('Sindrome de Noonan', '12', 165),
+('Acondroplasia', '4', 230),
+('Enfermedad de Gaucher', '1', 145),
+('Sindrome de Rett', 'X', 190),
+('Esclerosis lateral amiotrofica', '21', 310),
+('Sindrome de Williams', '7', 125),
+('Sindrome de DiGeorge', '22', 175),
+('Enfermedad de Fabry', 'X', 95),
+('Adrenoleucodistrofia', 'X', 155),
+('Sindrome de Alport', 'X', 115),
+('Ataxia de Friedreich', '9', 205),
+('Hemocromatosis hereditaria', '6', 270),
+('Sindrome de Li-Fraumeni', '17', 185),
+('Enfermedad de Peutz-Jeghers', '19', 80),
+('Sindrome de Waardenburg', '2', 135),
+('Osteogenesis imperfecta', '17', 240),
+('Sindrome de Apert', '10', 100),
+('Enfermedad de Menkes', 'X', 70),
+('Sindrome de Wiskott-Aldrich', 'X', 90),
+('Hiperplasia suprarrenal congenita', '6', 220);
+
+")
+
+```
+
+```{r, message = FALSE, warning=FALSE}
+dbGetQuery(con,"
+         SELECT * FROM enfermedades; ")
+
+```
+Referencia mutaciones
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con,"
+DROP TABLE IF EXISTS mutaciones;
+          ")
+```
+
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con," 
+  CREATE TABLE mutaciones(
+  
+    id SERIAL NOT NULL,
+    patologia text NOT NULL,
+    proteina_afectada varchar(15) NOT NULL
+    
+  ) 
+  "
+)
+```
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con, "
+INSERT INTO mutaciones(patologia, proteina_afectada)
+VALUES
+('Fibrosis quistica', 'Alanina'),
+('Anemia falciforme', 'Arginina'),
+('Hemofilia A', 'Asparagina'),
+('Enfermedad de Huntington', 'Aspartico'),
+('Distrofia muscular', 'Cisteina'),
+('Fenilcetonuria', 'Glutamina'),
+('Talasemia', 'Glutamico'),
+('Albinismo', 'Glicina'),
+('Sindrome de Marfan', 'Histidina'),
+('Atrofia muscular espinal', 'Isoleucina'),
+('Daltonismo', 'Leucina'),
+('Hipertricosis auricular', 'Lisina'),
+('Sindrome de Down', 'Metionina'),
+('Sindrome de Edwards', 'Fenilalanina'),
+('Sindrome de Patau', 'Prolina'),
+('Sindrome de Turner', 'Serina'),
+('Sindrome de Klinefelter', 'Treonina'),
+('Ictiosis ligada al X', 'Triptofano'),
+('Deficiencia de G6PD', 'Tirosina'),
+('Neurofibromatosis tipo 1', 'Valina'),
+('Enfermedad de Tay-Sachs', 'Alanina'),
+('Enfermedad de Wilson', 'Arginina'),
+('Retinoblastoma', 'Asparagina'),
+('Poliquistosis renal', 'Aspartico'),
+('Sindrome de Angelman', 'Cisteina'),
+('Sindrome de Noonan', 'Glutamina'),
+('Acondroplasia', 'Glutamico'),
+('Enfermedad de Gaucher', 'Glicina'),
+('Sindrome de Rett', 'Histidina'),
+('Ataxia de Friedreich', 'Isoleucina'),
+('Fibrosis quistica', 'Alanina'),
+('Fibrosis quistica', 'Glicina'),
+('Fibrosis quistica', 'Valina'),
+('Anemia falciforme', 'Glutamico'),
+('Anemia falciforme', 'Valina'),
+('Anemia falciforme', 'Leucina'),
+('Hemofilia A', 'Serina'),
+('Hemofilia A', 'Tirosina'),
+('Hemofilia A', 'Arginina'),
+('Enfermedad de Huntington', 'Glutamina'),
+('Enfermedad de Huntington', 'Prolina'),
+('Enfermedad de Huntington', 'Lisina'),
+('Distrofia muscular', 'Cisteina'),
+('Distrofia muscular', 'Metionina'),
+('Distrofia muscular', 'Treonina'),
+('Fenilcetonuria', 'Fenilalanina'),
+('Fenilcetonuria', 'Tirosina'),
+('Fenilcetonuria', 'Asparagina'),
+('Talasemia', 'Glutamico'),
+('Talasemia', 'Histidina'),
+('Talasemia', 'Glicina'),
+('Albinismo', 'Tirosina'),
+('Albinismo', 'Triptófano'),
+('Albinismo', 'Metionina'),
+('Sindrome de Marfan', 'Cisteina'),
+('Sindrome de Marfan', 'Glicina'),
+('Sindrome de Marfan', 'Prolina'),
+('Atrofia muscular espinal', 'Alanina'),
+('Atrofia muscular espinal', 'Arginina'),
+('Atrofia muscular espinal', 'Serina'),
+('Daltonismo', 'Leucina'),
+('Daltonismo', 'Isoleucina'),
+('Daltonismo', 'Valina'),
+('Enfermedad de Wilson', 'Histidina'),
+('Enfermedad de Wilson', 'Metionina'),
+('Enfermedad de Wilson', 'Cisteina'),
+('Acondroplasia', 'Glicina'),
+('Acondroplasia', 'Arginina'),
+('Sindrome de Rett', 'Prolina'),
+('Sindrome de Rett', 'Treonina');
+
+
+
+")
+
+```
+```{r, message = FALSE, warning=FALSE}
+dbGetQuery(con,"
+         SELECT * FROM mutaciones; ")
+
+```
 
 #### **Tabla consultas**
 
