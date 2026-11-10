@@ -448,82 +448,216 @@ dbGetQuery(con,"
          SELECT * FROM mutaciones; ")
 
 ```
+Referncia de tipos de patologías
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con, "
+CREATE TABLE genes(
 
-#### **Tabla consultas**
+  id_gen Serial Primary key,
+  nombre_gen text NOT NULL,
+  cromosoma Varchar(2) not null
+  
+)
+          ")
+```
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con, "
+INSERT INTO genes (nombre_gen, cromosoma)
+VALUES
+('CFTR', '7'),
+('HBB', '11'),
+('F8', 'X'),
+('HTT', '4'),
+('DMD', 'X'),
+('PAH', '12'),
+('HBA1', '16'),
+('TYR', '11'),
+('FBN1', '15'),
+('SMN1', '5'),
+('OPN1LW', 'X'),
+('G6PD', 'X'),
+('NF1', '17'),
+('HEXA', '15'),
+('ATP7B', '13'),
+('RB1', '13'),
+('PKD1', '16'),
+('UBE3A', '15'),
+('PTPN11', '12'),
+('FGFR3', '4'),
+('GBA1', '1'),
+('MECP2', 'X'),
+('FXN', '9'),
+('HFE', '6'),
+('TP53', '17'),
+('STK11', '19'),
+('SOX10', '22'),
+('COL1A1', '17'),
+('FGFR2', '10'),
+('ABCD1', 'X'),
+('COL4A5', 'X'),
+('SHOX', 'X'),
+('AR', 'X'),
+('FMR1', 'X'),
+('BRCA1', '17'),
+('BRCA2', '13'),
+('APC', '5'),
+('MLH1', '3'),
+('MSH2', '2'),
+('KRAS', '12'),
+('EGFR', '7'),
+('MYC', '8'),
+('BRAF', '7'),
+('JAK2', '9'),
+('VHL', '3'),
+('RET', '10'),
+('KIT', '4'),
+('ALK', '2'),
+('ROS1', '6'),
+('MYH7', '14'),
+('MYBPC3', '11'),
+('KCNQ1', '11'),
+('SCN5A', '3'),
+('RYR2', '1'),
+('LDLR', '19'),
+('APOE', '19'),
+('F5', '1'),
+('F9', 'X'),
+('SERPINA1', '14'),
+('TTR', '18'),
+('APP', '21'),
+('PSEN1', '14'),
+('PSEN2', '1'),
+('SOD1', '21'),
+('TSC1', '9'),
+('TSC2', '16'),
+('NF2', '22'),
+('VWF', '12'),
+('COL3A1', '2'),
+('PKD2', '4'),
+('OTC', 'X'),
+('IDS', 'X'),
+('GLA', 'X'),
+('GALT', '9'),
+('ALDH2', '12'),
+('LEP', '7'),
+('LEPR', '1'),
+('INS', '11');
 
-Contendrá los registros de consultas médicas.
+")
+
+```
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con, "
+   INSERT INTO genes (nombre_gen, cromosoma)
+VALUES
+('BRCA1', '17'),
+('BRCA2', '13'),
+('APC', '5'),
+('ATM', '11'),
+('CHEK2', '22'),
+('PALB2', '16'),
+('RAD51', '15'),
+('ERBB2', '17'),
+('CDH1', '16'),
+('PTEN', '10'),
+('SMAD4', '18'),
+('MEN1', '11'),
+('RET', '10'),
+('CDKN2A', '9'),
+('RBM20', '10'),
+('LMNA', '1'),
+('PKP2', '12'),
+('DSP', '6'),
+('DSG2', '18'),
+('DSC2', '18'),
+('KCNH2', '7'),
+('KCNJ2', '17'),
+('CACNA1S', '1'),
+('RYR1', '19'),
+('COL2A1', '12'),
+('COL5A1', '9'),
+('TGFBR2', '3'),
+('PAX6', '11'),
+('GATA1', 'X'),
+('SRY', 'Y');       
+          ")
+```
+
+```{r, message = FALSE, warning=FALSE}
+dbGetQuery(con,"
+         SELECT * FROM genes; ")
+
+```
+Referncia de tipo de mutación
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con, "
+CREATE TABLE tipo_mutacion(
+
+  patologia text Primary key,
+  nombre_mutacion text,
+  descripcion_nombre_mutacion text
+  
+)
+          ")
+```
 
 ```{r, message=FALSE, warning=FALSE}
-# Crear tabla 'consultas'
 dbExecute(con, "
-CREATE TABLE consultas (
-    id_consulta SERIAL PRIMARY KEY,
-    id_paciente INTEGER REFERENCES pacientes(id_paciente), -- Clave foránea a 'pacientes'
-    fecha DATE NOT NULL,
-    diagnostico VARCHAR(255),
-    CONSTRAINT chk_fecha CHECK (fecha <= CURRENT_DATE) -- La fecha de consulta no puede ser futura
-);
-")
+INSERT INTO tipo_mutacion
+(patologia, nombre_mutacion, descripcion_nombre_mutacion)
+VALUES
+('Fibrosis quistica', 'Delecion', 'Perdida de tres nucleotidos en el gen CFTR'),
+('Anemia falciforme', 'Sustitucion', 'Cambio de un nucleotido que provoca la sustitucion de glutamico por valina'),
+('Hemofilia A', 'Inversion', 'Inversion de un fragmento del gen F8'),
+('Enfermedad de Huntington', 'Expansion', 'Aumento del numero de repeticiones CAG'),
+('Distrofia muscular', 'Delecion', 'Perdida de fragmentos del gen DMD'),
+('Fenilcetonuria', 'Sustitucion', 'Cambio de un nucleotido en el gen PAH'),
+('Talasemia', 'Delecion', 'Perdida de material genetico relacionado con la hemoglobina'),
+('Albinismo', 'Sustitucion', 'Cambio de nucleotidos que altera la actividad de la tirosinasa'),
+('Sindrome de Marfan', 'Sustitucion', 'Cambio de un nucleotido en el gen FBN1'),
+('Atrofia muscular espinal', 'Delecion', 'Perdida de una copia funcional del gen SMN1'),
+('Daltonismo', 'Sustitucion', 'Cambio en la secuencia del gen de las opsinas'),
+('Hipertricosis auricular', 'Herencia ligada al Y', 'Alteracion hereditaria asociada al cromosoma Y'),
+('Sindrome de Down', 'Trisomia', 'Presencia de una copia adicional del cromosoma 21'),
+('Sindrome de Edwards', 'Trisomia', 'Presencia de una copia adicional del cromosoma 18'),
+('Sindrome de Patau', 'Trisomia', 'Presencia de una copia adicional del cromosoma 13'),
+('Sindrome de Turner', 'Monosomia', 'Ausencia total o parcial de un cromosoma X'),
+('Sindrome de Klinefelter', 'Aneuploidia', 'Presencia de un cromosoma X adicional'),
+('Ictiosis ligada al X', 'Delecion', 'Perdida de material genetico en el gen STS'),
+('Deficiencia de G6PD', 'Sustitucion', 'Cambio de nucleotidos en el gen G6PD'),
+('Neurofibromatosis tipo 1', 'Mutacion sin sentido', 'Aparicion de un codon de parada prematuro'),
+('Enfermedad de Tay-Sachs', 'Insercion', 'Incorporacion de nucleotidos en el gen HEXA'),
+('Enfermedad de Wilson', 'Sustitucion', 'Cambio de nucleotidos en el gen ATP7B'),
+('Retinoblastoma', 'Delecion', 'Perdida de una region del gen RB1'),
+('Poliquistosis renal', 'Mutacion sin sentido', 'Generacion de una señal de parada prematura en PKD1'),
+('Sindrome de Angelman', 'Delecion', 'Perdida de una region del cromosoma 15'),
+('Sindrome de Noonan', 'Sustitucion', 'Cambio de nucleotidos en el gen PTPN11'),
+('Acondroplasia', 'Sustitucion', 'Cambio puntual en el gen FGFR3'),
+('Enfermedad de Gaucher', 'Sustitucion', 'Cambio de nucleotidos en el gen GBA1'),
+('Sindrome de Rett', 'Sustitucion', 'Alteracion de la secuencia del gen MECP2'),
+('Ataxia de Friedreich', 'Expansion', 'Aumento de repeticiones GAA en el gen FXN'),
+('Hemocromatosis hereditaria', 'Sustitucion', 'Cambio de nucleotidos en el gen HFE'),
+('Sindrome de Li-Fraumeni', 'Mutacion sin sentido', 'Aparicion de un codon de parada en TP53'),
+('Enfermedad de Peutz-Jeghers', 'Delecion', 'Perdida de nucleotidos en el gen STK11'),
+('Sindrome de Waardenburg', 'Sustitucion', 'Cambio de nucleotidos en un gen relacionado con la pigmentacion'),
+('Osteogenesis imperfecta', 'Sustitucion', 'Alteracion de la secuencia del gen COL1A1'),
+('Sindrome de Apert', 'Sustitucion', 'Mutacion puntual en el gen FGFR2'),
+('Enfermedad de Menkes', 'Delecion', 'Perdida de material genetico en el gen ATP7A'),
+('Sindrome de Wiskott-Aldrich', 'Insercion', 'Incorporacion de nucleotidos en el gen WAS'),
+('Hiperplasia suprarrenal congenita', 'Delecion', 'Perdida de material genetico en el gen CYP21A2'),
+('Sindrome de Ehlers-Danlos', 'Sustitucion', 'Cambio de nucleotidos en genes relacionados con el colageno');
+ ")
 ```
 
-Ahora agregamos valores a las tablas de consultas
+```{r, message = FALSE, warning=FALSE}
+dbGetQuery(con,"
+         SELECT * FROM tipo_mutacion; ")
 
-```{r, warning=FALSE, message=FALSE}
-# Insertar datos en 'consultas'
-#dbExecute(con, "
-#INSERT INTO consultas (id_paciente, fecha, diagnostico) 
-#VALUES 
-#   (1, '2024-01-10', 'Hipertensión'),
-#  (2, '2024-02-15', 'Diabetes Tipo 2'),
-# (3, '2024-03-01', 'Insuficiencia Cardíaca');
-#")
-```
-
-Mostramos la tabla
-
-```{sql, connection=con}
-SELECT * FROM Cadena de ARN; 
-```
-
-#### **Tabla tratamientos**
-
-Contendrá los tratamientos que se administran a los pacientes.
-
-```{r warning=FALSE, message=FALSE}
-# Crear tabla 'tratamientos'
-dbExecute(con, "
-CREATE TABLE tratamientos (
-    id_tratamiento SERIAL PRIMARY KEY,
-    id_consulta INTEGER REFERENCES consultas(id_consulta), -- Clave foránea a 'consultas'
-    nombre_tratamiento VARCHAR(100) NOT NULL,
-    duracion_dias INTEGER CHECK (duracion_dias > 0), -- La duración del tratamiento debe ser mayor a 0
-    dosis_mg DECIMAL(5,2) CHECK (dosis_mg > 0) -- La dosis debe ser mayor a 0
-);
-")
-```
-
-Ahora agregamos valores a la tabla de tratamientos
-
-```{r, warning=FALSE, message=FALSE}
-# Insertar datos en 'tratamientos'
-dbExecute(con, "
-INSERT INTO tratamientos (id_consulta, nombre_tratamiento, duracion_dias, dosis_mg) 
-VALUES 
-    (1, 'Enalapril', 30, 10.5),
-    (2, 'Metformina', 60, 850.0),
-    (3, 'Furosemida', 15, 40.0);
-")
-```
-
-Mostramos la tabla
-
-```{sql, connection=con}
-SELECT * FROM tratamientos; 
 ```
 
 ### Pregunta 1
 
-1.  ¿Cuáles son los nombres de los pacientes y los tratamientos que están recibiendo?
+1.  Cual es el número total de mutaciones por cada cromosoma afectado.
 
 ```{sql, connection=con}
 SELECT pacientes.nombre, tratamientos.nombre_tratamiento
@@ -534,7 +668,7 @@ JOIN tratamientos ON consultas.id_consulta = tratamientos.id_consulta;
 
 ### Pregunta 2
 
-2.  Cuántas consultas han sido diagnosticadas con cada tipo de diagnóstico?
+2.  Patologías con aparición de mutaciones en ciertas proteínas que tengan x número de mutaciones como mínimo.
 
 ```{sql, connection=con}
 SELECT consultas.diagnostico, COUNT(consultas.id_consulta) AS total_consultas
