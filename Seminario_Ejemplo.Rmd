@@ -35,30 +35,24 @@ En este semianrio tendréis que ser capáz de generar tablas con datos relativos
 
 A continuación te dejo un **pequeño** listado con recursos, pero se valorará la obtención de datos de diversos orígenes.
 
--   [Datos abiertos Gob. España](https://datos.gob.es/es/catalogo) / [`opendataes`](https://github.com/rOpenSpain/opendataes)
--   [Datos abiertos CyL](https://datosabiertos.jcyl.es/web/es/datos-abiertos-castilla-leon.html) / [`opendataes`](https://github.com/rOpenSpain/opendataes)
--   [Datos espaciales de hospitales](https://opendata.esri.es/datasets/ComunidadSIG::hospitales-de-espa%C3%B1a/about)
--   [INE (Instituto Nacional de Estadística) package](https://inebaser.wordpress.com/)
--   [rOpenSpain community](https://ropenspain.es/) / [GitHub-Repo](https://github.com/rOpenSpain)
--   [European Health Information Initiative (EHII)](https://www.euro.who.int/en/data-and-evidence/european-health-information-initiative-ehii)
--   [World Health Organization (WHO)](https://www.who.int/data)
--   [rOpenHealth](https://github.com/rOpenHealth)
+- [Datos abiertos Gob. España](https://datos.gob.es/es/catalogo) / [`opendataes`](https://github.com/rOpenSpain/opendataes)
+- [Datos abiertos CyL](https://datosabiertos.jcyl.es/web/es/datos-abiertos-castilla-leon.html) / [`opendataes`](https://github.com/rOpenSpain/opendataes)
+- [Datos espaciales de hospitales](https://opendata.esri.es/datasets/ComunidadSIG::hospitales-de-espa%C3%B1a/about)
+- [INE (Instituto Nacional de Estadística) package](https://inebaser.wordpress.com/)
+- [rOpenSpain community](https://ropenspain.es/) / [GitHub-Repo](https://github.com/rOpenSpain)
+- [European Health Information Initiative (EHII)](https://www.euro.who.int/en/data-and-evidence/european-health-information-initiative-ehii)
+- [World Health Organization (WHO)](https://www.who.int/data)
+- [rOpenHealth](https://github.com/rOpenHealth)
 
-## Datos del seminario
 
-Los datos deberán ser ingresados "*manualmente*"; es decir, que tendréis que crear las tablas vosotros mismos y así poder aplicar todas (o la gran mayoría) de conceptos y restricciones que veamos en prácticas.
-
-## Tablas del seminario
-
-El número de tablas creadas no está definido pero han de ser más de dos. De esta manera podréis construir preguntas/ejemplos en los que poner en práctica la unión de tablas y el calculo de variables y operaciones (sumarias, de conjunto, etc).
 
 ## Texto del seminario
 
 El texto deberá seguir el orden de un informe/artículo científico; en el que se vean claramente:
 
--   **Introducción**: se hablará del tema a tratar y de dónde provienen los datos.
--   **Objetivos/Preguntas**: se detallarán un máximo de 4 preguntas (u objetivos), los cuales serán respondidos con consultas en SQL.
--   **Métodología y Resultados**: se corresponde con la ejecución del código y la obtención de las tablas resultantes que responderán a las pregunats anteriores.
+- **Introducción**: se hablará del tema a tratar y de dónde provienen los datos.
+- **Objetivos/Preguntas**: se detallarán un máximo de 4 preguntas (u objetivos), los cuales serán respondidos con consultas en SQL.
+- **Métodología y Resultados**: se corresponde con la ejecución del código y la obtención de las tablas resultantes que responderán a las pregunats anteriores.
 
 # Ejemplo de seminario
 
@@ -68,19 +62,33 @@ A continuación os dejo un ejercicio muy básico para que veáis cómo estructur
 
 Estos datos se corresponden a un ejemplo sintético (*i.e.* ficticio) de **epidemiología**.
 
-En total se crearán tres **tablas**.
+En total se crearon 6 **referencias**.
 
-1.  **Tabla pacientes**: Contendrá los datos de los pacientes.
-2.  **Tabla consultas**: Contendrá los registros de consultas médicas.
-3.  **Tabla tratamientos**: Contendrá los tratamientos que se administran a los pacientes.
+```{r, warning=FALSE, message=FALSE}
+# Crear tabla 'Cadena_ARN'
+dbGetQuery(con, "
+  SELECT table_name
+  FROM information_schema.tables
+  WHERE table_schema = 'public'
+    AND table_type = 'BASE TABLE';
+")
+```
+
+1.  **Referencia cadena_arn**: nos indica las distintas cadenas de ARN que forman codones
+2.  **Referencia codones**:
+3.  **Referencia enfermedades**: 
+4.  **Referencia genes**:
+5.  **Referencia tipo_mutacion**:
+
+**Índice** lo hemos creado a partir del information_schema que crea Postgres que contiene los datos sobre la base de datos, más especifico las tablas donde son publicas y ademas son tablas reales y no de tipo view.
 
 ## Objetivos/Preguntas
 
 A continuación se responderán las siguientes preguntas:
 
-1.  ¿Cuáles son los nombres de los pacientes y los tratamientos que están recibiendo?
-2.  Cuántas consultas han sido diagnosticadas con cada tipo de diagnóstico?
-3.  ¿Cuál es la dosis promedio de tratamiento que están recibiendo los pacientes en cada diagnóstico?
+1.  Cual es el número total de mutaciones por cada cromosoma afectado.
+2.  
+3.  
 
 ## Metodología y Resultados
 
@@ -92,10 +100,6 @@ Código del seminario
 
 Contendrá los datos de la cadena de ARN con su nombre
 
-```{r, message = FALSE, warning=FALSE}
-dbExecute(con,"
-          drop table if exists cadena_ARN;")
-```
 
 ```{r, warning=FALSE, message=FALSE}
 # Crear tabla 'Cadena_ARN'
@@ -110,6 +114,7 @@ CREATE TABLE Cadena_ARN (
 );
 ")
 ```
+
 Añadimos tuplas
 
 ```{r, warning=FALSE, message=FALSE}
@@ -209,11 +214,8 @@ dbGetQuery(con,"
 ```
 
 Referencia de codones
-```{r, message=FALSE, warning=FALSE}
-dbExecute(con,"
-DROP TABLE IF EXISTS codones;
-          ")
-```
+
+
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
 CREATE TABLE codones(
@@ -224,6 +226,7 @@ CREATE TABLE codones(
 )
           ")
 ```
+
 Añadimos las tuplas
 
 ```{r, message=FALSE, warning=FALSE}
@@ -253,13 +256,17 @@ VALUES
 
           ")
 ```
+
 Mostramos la referencia
+
 ```{r, message = FALSE, warning=FALSE}
 dbGetQuery(con,"
          SELECT * FROM codones; ")
 
 ```
+
 Referncia enfermedades
+
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con,"
 DROP TABLE IF EXISTS enfermedades;
@@ -344,7 +351,9 @@ dbGetQuery(con,"
          SELECT * FROM enfermedades; ")
 
 ```
+
 Referencia mutaciones
+
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con,"
 DROP TABLE IF EXISTS mutaciones;
@@ -363,6 +372,7 @@ dbExecute(con,"
   "
 )
 ```
+
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
 INSERT INTO mutaciones(patologia, proteina_afectada)
@@ -443,12 +453,15 @@ VALUES
 ")
 
 ```
+
 ```{r, message = FALSE, warning=FALSE}
 dbGetQuery(con,"
          SELECT * FROM mutaciones; ")
 
 ```
+
 Referncia de tipos de patologías
+
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
 CREATE TABLE genes(
@@ -460,6 +473,7 @@ CREATE TABLE genes(
 )
           ")
 ```
+
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
 INSERT INTO genes (nombre_gen, cromosoma)
@@ -546,6 +560,7 @@ VALUES
 ")
 
 ```
+
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
    INSERT INTO genes (nombre_gen, cromosoma)
@@ -588,7 +603,9 @@ dbGetQuery(con,"
          SELECT * FROM genes; ")
 
 ```
+
 Referncia de tipo de mutación
+
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
 CREATE TABLE tipo_mutacion(
@@ -660,10 +677,7 @@ dbGetQuery(con,"
 1.  Cual es el número total de mutaciones por cada cromosoma afectado.
 
 ```{sql, connection=con}
-SELECT pacientes.nombre, tratamientos.nombre_tratamiento
-FROM pacientes 
-JOIN consultas ON pacientes.id_paciente = consultas.id_paciente
-JOIN tratamientos ON consultas.id_consulta = tratamientos.id_consulta;
+SELECT 
 ```
 
 ### Pregunta 2
