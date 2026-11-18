@@ -5,6 +5,13 @@ author: "Carla Güemes Dai & Victoria Caba"
 date: "`r Sys.Date()`"
 output: 
   html_document:
+    theme: flatly
+    highlight: tango
+    toc: true
+    numero_sections: true
+    code_folding: show
+    df_print: paged
+    css: estilos.css
     keep_md: true
     self_contained: true
 ---
@@ -26,83 +33,49 @@ con <- dbConnect(RPostgres::Postgres(),
                  host = "localhost",           # Dirección del host
                  port = 5432,                  # Puerto de PostgreSQL
                  user = "postgres",          # Tu usuario de PostgreSQL
-                 password = "Perseidas13.")   # Tu contraseña de PostgreSQL
+                 password = "postgres")   # Tu contraseña de PostgreSQL
 ```
 
-# Idea de Seminario
 
-En este semianrio tendréis que ser capáz de generar tablas con datos relativos a la salud humana y/o biomedicina. Para esto tendréis que buscar en diferentes repositorios de datos disponibles.
+#Índice 
 
-A continuación te dejo un **pequeño** listado con recursos, pero se valorará la obtención de datos de diversos orígenes.
-
-- [Datos abiertos Gob. España](https://datos.gob.es/es/catalogo) / [`opendataes`](https://github.com/rOpenSpain/opendataes)
-- [Datos abiertos CyL](https://datosabiertos.jcyl.es/web/es/datos-abiertos-castilla-leon.html) / [`opendataes`](https://github.com/rOpenSpain/opendataes)
-- [Datos espaciales de hospitales](https://opendata.esri.es/datasets/ComunidadSIG::hospitales-de-espa%C3%B1a/about)
-- [INE (Instituto Nacional de Estadística) package](https://inebaser.wordpress.com/)
-- [rOpenSpain community](https://ropenspain.es/) / [GitHub-Repo](https://github.com/rOpenSpain)
-- [European Health Information Initiative (EHII)](https://www.euro.who.int/en/data-and-evidence/european-health-information-initiative-ehii)
-- [World Health Organization (WHO)](https://www.who.int/data)
-- [rOpenHealth](https://github.com/rOpenHealth)
+- **Introducción**
+- **Preguntas**
 
 
 
-## Texto del seminario
-
-El texto deberá seguir el orden de un informe/artículo científico; en el que se vean claramente:
-
-- **Introducción**: se hablará del tema a tratar y de dónde provienen los datos.
-- **Objetivos/Preguntas**: se detallarán un máximo de 4 preguntas (u objetivos), los cuales serán respondidos con consultas en SQL.
-- **Métodología y Resultados**: se corresponde con la ejecución del código y la obtención de las tablas resultantes que responderán a las pregunats anteriores.
-
-# Ejemplo de seminario
-
-A continuación os dejo un ejercicio muy básico para que veáis cómo estructurar el trabajo del seminario. Reitero que es muy básico y un seminario similar a este ejemplo, **no estaría a la altura de ser aprobado**.
 
 ## Introducción
 
-Estos datos se corresponden a un ejemplo sintético (*i.e.* ficticio) de **epidemiología**.
+Estos datos se corresponden a un ejemplo sintético (*i.e.* ficticio) de **genética molécular**.
 
 En total se crearon 6 **referencias**.
 
-```{r, warning=FALSE, message=FALSE}
-# Crear tabla 'Cadena_ARN'
-dbGetQuery(con, "
-  SELECT table_name
-  FROM information_schema.tables
-  WHERE table_schema = 'public'
-    AND table_type = 'BASE TABLE';
-")
-```
+
 
 1.  **Referencia cadena_arn**: nos indica las distintas cadenas de ARN que forman codones
-2.  **Referencia codones**:
-3.  **Referencia enfermedades**: 
-4.  **Referencia genes**:
-5.  **Referencia tipo_mutacion**:
+2.  **Referencia codones**: Nos indica el nombre del codón con su nombre de aminoácido
+3.  **Referencia enfermedades**: Registra cada patología con el cromosoma afectado y el número de mutaciones presentes
+4.  **Referencia genes**: guarda cada gen con el cromosoma en el que se encuentra
+5.  **Referencia de mutaciones**: lisra las mutaciones registradas de cada patología y la proteína afectada
+6.  **Referencia tipo_mutacion**: indica el tipo de mutación de cada patología y la proteína afectada
 
-**Índice** lo hemos creado a partir del information_schema que crea Postgres que contiene los datos sobre la base de datos, más especifico las tablas donde son publicas y ademas son tablas reales y no de tipo view.
 
 ## Objetivos/Preguntas
 
 A continuación se responderán las siguientes preguntas:
 
-1.  ¿Cuál es el número total de mutaciones por cada cromosoma afectado?
-2.  ¿Qué patologías tienen un mínimo de 48 mutaciones? 
+1.  ¿Cuál es el número total de mutaciones por cada cromosoma afectado, ordenado de mayor a menor?
+2.  ¿Qué patologías tienen un mínimo de 48 mutaciones y cuantas proteínas llega a afectar?  
 3.  ¿Qué tipo de mutación en más frecuente?
+4. ¿Qué aminoácido está codificado por más de un codón?
 
-## Al no haber ejecutado los datos por nuestra cuenta, hemos realizado una última pregunta para comprobar que todas las enfermedades solicitadas presentan mutaciones
 
-4. ¿Hay patologías en "enfermedades" que no tenga mutación registrada en "mutaciones"?
 
-## Metodología y Resultados
-
-Código del seminario
-
-### Creación de tablas
+### Creación de Referencias
 
 #### **Referencia Cadena de ARN**
 
-Contendrá los datos de la cadena de ARN con su nombre
 
 
 ```{r, warning=FALSE, message=FALSE}
@@ -118,6 +91,7 @@ CREATE TABLE Cadena_ARN (
 );
 ")
 ```
+
 
 Añadimos tuplas
 
@@ -217,7 +191,7 @@ dbGetQuery(con,"
 
 ```
 
-Referencia de codones
+#### **Referencia  de codones**
 
 
 ```{r, message=FALSE, warning=FALSE}
@@ -269,24 +243,25 @@ dbGetQuery(con,"
 
 ```
 
-Referncia enfermedades
+#### **Referencia de enfermedades**
 
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con," 
   CREATE TABLE enfermedades(
   
     patologia text PRIMARY KEY,
-    gen_Afectado char(2) NOT NULL,
+    cromosoma_Afectado char(2) NOT NULL,
     numero_Mutaciones int
     
   ) 
   "
 )
 ```
+Añadimos tuplas
 
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
-INSERT INTO enfermedades(patologia, gen_Afectado, numero_Mutaciones)
+INSERT INTO enfermedades(patologia, cromosoma_Afectado, numero_Mutaciones)
 VALUES
 ('Fibrosis quistica', '7', 1500),
 ('Anemia falciforme', '11', 320),
@@ -343,6 +318,7 @@ VALUES
 ")
 
 ```
+Mostramos la referencia
 
 ```{r, message = FALSE, warning=FALSE}
 dbGetQuery(con,"
@@ -350,7 +326,7 @@ dbGetQuery(con,"
 
 ```
 
-Referencia mutaciones
+#### **Referencia  de mutaciones**
 
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con," 
@@ -364,6 +340,7 @@ dbExecute(con,"
   "
 )
 ```
+Añadimos las tuplas
 
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
@@ -445,6 +422,7 @@ VALUES
 ")
 
 ```
+Mostramos la referencia
 
 ```{r, message = FALSE, warning=FALSE}
 dbGetQuery(con,"
@@ -452,7 +430,7 @@ dbGetQuery(con,"
 
 ```
 
-Referncia de tipos de patologías
+#### **Referencia de tipos de patologías**
 
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
@@ -465,7 +443,7 @@ CREATE TABLE genes(
 )
           ")
 ```
-
+Añadimos tuplas
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
 INSERT INTO genes (nombre_gen, cromosoma)
@@ -589,6 +567,7 @@ VALUES
 ('SRY', 'Y');       
           ")
 ```
+Mostramos la Referencia
 
 ```{r, message = FALSE, warning=FALSE}
 dbGetQuery(con,"
@@ -596,7 +575,7 @@ dbGetQuery(con,"
 
 ```
 
-Referncia de tipo de mutación
+#### **Referencia de tipo de mutación**
 
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
@@ -609,6 +588,7 @@ CREATE TABLE tipo_mutacion(
 )
           ")
 ```
+Añadimos las tuplas
 
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con, "
@@ -657,37 +637,87 @@ VALUES
 ('Sindrome de Ehlers-Danlos', 'Sustitucion', 'Cambio de nucleotidos en genes relacionados con el colageno');
  ")
 ```
-
+Mostramos la referencia
 ```{r, message = FALSE, warning=FALSE}
 dbGetQuery(con,"
          SELECT * FROM tipo_mutacion; ")
 
 ```
+## PREGUNTAS
+Recordemos las referencias ya creadas
+```{r, warning=FALSE, message=FALSE}
+# Crear tabla 'Cadena_ARN'
+dbGetQuery(con, "
+  SELECT table_name as índice_de_referencias
+  FROM information_schema.tables
+  WHERE table_schema = 'public'
+    AND table_type = 'BASE TABLE';
+")
+```
+**Índice** lo hemos creado a partir del information_schema que crea Postgres que contiene los datos sobre la base de datos, más especifico las tablas donde son publicas y ademas son tablas reales y no de tipo view.
 
 ### Pregunta 1
 
-1.  ¿Cuál es el número total de mutaciones por cada cromosoma afectado?
+#### 1.  ¿Cuál es el número total de mutaciones por cada cromosoma afectado, ordenado de mayor a menor?
 
 ```{sql, connection=con}
-SELECT gen_Afectado As cromosoma,
-SUM(numero_mutaciones) AS total_mutaciones
+SELECT cromosoma_Afectado AS cromosoma,
+       COUNT(patologia) AS numero_patologias,
+       COALESCE(SUM(numero_Mutaciones), 0) AS total_mutaciones
+
 FROM enfermedades
-GROUP BY gen_Afectado
+GROUP BY cromosoma_Afectado
 ORDER BY total_mutaciones DESC;
 ```
 
 ### Pregunta 2
 
-2. ¿Qué patologías tienen un mínimo de 48 mutaciones? 
+#### 2. ¿Qué patologías tienen un mínimo de 48 mutaciones y cuantas proteínas llega a afectar? 
 
+Ordenado por el número de mutaciones que tiene cada enfermedad.
+```{sql, connection=con}
+SELECT e.patologia,
+       e.numero_Mutaciones,
+       COUNT(m.proteina_afectada) AS num_proteinas_afectadas
+FROM enfermedades e
+RIGHT JOIN mutaciones m ON m.patologia = e.patologia
+WHERE e.numero_Mutaciones >= 48
+GROUP BY e.patologia, e.numero_Mutaciones
+ORDER BY e.numero_Mutaciones DESC;
+```
 
+Ordenada por el número de proteínas afectadas
+```{sql, connection=con}
+SELECT e.patologia,
+       e.numero_Mutaciones,
+       COUNT(m.proteina_afectada) AS num_proteinas_afectadas
+FROM enfermedades e
+LEFT JOIN mutaciones m ON m.patologia = e.patologia
+WHERE e.numero_Mutaciones >= 48
+GROUP BY e.patologia, e.numero_Mutaciones
+ORDER BY COUNT(m.proteina_afectada) DESC;
+```
 ### Pregunta 3
 
-3.  ¿Qué tipo de mutación en más frecuente?
+#### 3.  ¿Qué tipo de mutación en más frecuente?
+```{sql, connection=con}
+SELECT nombre_mutacion,
+       COUNT(*) AS numero_patologias
+FROM tipo_mutacion
+GROUP BY nombre_mutacion
+ORDER BY numero_patologias DESC;
+```
 
-## pregunta 4
+### Pregunta 4
 
-4. ¿Hay patologías en "enfermedades" que no tenga mutación registrada en "mutaciones"?
+#### 4. ¿Qué aminoácido está codificado por más de un codón?
+```{sql, connection=con}
+SELECT codón AS aminoacido,
+       COUNT(*) AS numero_codones
+FROM cadena_arn
+GROUP BY codón
+ORDER BY numero_codones DESC;
+```
 
 ```{r, echo=FALSE, eval=FALSE}
 # Consultar los datos
