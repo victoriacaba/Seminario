@@ -26,7 +26,7 @@ con <- dbConnect(RPostgres::Postgres(),
                  host = "localhost",           # Dirección del host
                  port = 5432,                  # Puerto de PostgreSQL
                  user = "postgres",          # Tu usuario de PostgreSQL
-                 password = "postgres")   # Tu contraseña de PostgreSQL
+                 password = "Perseidas13.")   # Tu contraseña de PostgreSQL
 ```
 
 # Idea de Seminario
@@ -86,9 +86,13 @@ dbGetQuery(con, "
 
 A continuación se responderán las siguientes preguntas:
 
-1.  Cual es el número total de mutaciones por cada cromosoma afectado.
-2.  
-3.  
+1.  ¿Cuál es el número total de mutaciones por cada cromosoma afectado?
+2.  ¿Qué patologías tienen un mínimo de 48 mutaciones? 
+3.  ¿Qué tipo de mutación en más frecuente?
+
+## Al no haber ejecutado los datos por nuestra cuenta, hemos realizado una última pregunta para comprobar que todas las enfermedades solicitadas presentan mutaciones
+
+4. ¿Hay patologías en "enfermedades" que no tenga mutación registrada en "mutaciones"?
 
 ## Metodología y Resultados
 
@@ -268,12 +272,6 @@ dbGetQuery(con,"
 Referncia enfermedades
 
 ```{r, message=FALSE, warning=FALSE}
-dbExecute(con,"
-DROP TABLE IF EXISTS enfermedades;
-          ")
-```
-
-```{r, message=FALSE, warning=FALSE}
 dbExecute(con," 
   CREATE TABLE enfermedades(
   
@@ -353,12 +351,6 @@ dbGetQuery(con,"
 ```
 
 Referencia mutaciones
-
-```{r, message=FALSE, warning=FALSE}
-dbExecute(con,"
-DROP TABLE IF EXISTS mutaciones;
-          ")
-```
 
 ```{r, message=FALSE, warning=FALSE}
 dbExecute(con," 
@@ -674,32 +666,28 @@ dbGetQuery(con,"
 
 ### Pregunta 1
 
-1.  Cual es el número total de mutaciones por cada cromosoma afectado.
+1.  ¿Cuál es el número total de mutaciones por cada cromosoma afectado?
 
 ```{sql, connection=con}
-SELECT 
+SELECT gen_Afectado As cromosoma,
+SUM(numero_mutaciones) AS total_mutaciones
+FROM enfermedades
+GROUP BY gen_Afectado
+ORDER BY total_mutaciones DESC;
 ```
 
 ### Pregunta 2
 
-2.  Patologías con aparición de mutaciones en ciertas proteínas que tengan x número de mutaciones como mínimo.
+2. ¿Qué patologías tienen un mínimo de 48 mutaciones? 
 
-```{sql, connection=con}
-SELECT consultas.diagnostico, COUNT(consultas.id_consulta) AS total_consultas
-FROM consultas 
-GROUP BY consultas.diagnostico;
-```
 
 ### Pregunta 3
 
-3.  ¿Cuál es la dosis promedio de tratamiento que están recibiendo los pacientes en cada diagnóstico?
+3.  ¿Qué tipo de mutación en más frecuente?
 
-```{sql, connection=con}
-SELECT consultas.diagnostico, AVG(tratamientos.dosis_mg) AS dosis_promedio
-FROM consultas 
-JOIN tratamientos ON consultas.id_consulta = tratamientos.id_consulta
-GROUP BY consultas.diagnostico;
-```
+## pregunta 4
+
+4. ¿Hay patologías en "enfermedades" que no tenga mutación registrada en "mutaciones"?
 
 ```{r, echo=FALSE, eval=FALSE}
 # Consultar los datos
