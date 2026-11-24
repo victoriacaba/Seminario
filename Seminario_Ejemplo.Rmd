@@ -88,6 +88,7 @@ CREATE TABLE Cadena_ARN (
     Tercer_nucleótido Char(1) not null,
     ARN char(3) PRIMARY KEY,
     Codón Char(5) not null
+    
 );
 ")
 ```
@@ -324,7 +325,9 @@ Mostramos la referencia
 dbGetQuery(con,"
          SELECT * FROM enfermedades; ")
 
+
 ```
+
 
 #### **Referencia  de mutaciones**
 
@@ -584,7 +587,6 @@ CREATE TABLE tipo_mutacion(
   patologia text Primary key,
   nombre_mutacion text,
   descripcion_nombre_mutacion text
-  
 )
           ")
 ```
@@ -643,6 +645,29 @@ dbGetQuery(con,"
          SELECT * FROM tipo_mutacion; ")
 
 ```
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con, "
+ALTER TABLE tipo_mutacion
+  ADD CONSTRAINT fk_tipo_enfermedad
+  FOREIGN KEY (patologia) REFERENCES enfermedades(patologia);
+          ")
+```
+```{r, message=FALSE, warning=FALSE}
+dbExecute(con, "
+ALTER TABLE mutaciones
+  ADD CONSTRAINT fk_mut_enfermedad
+  FOREIGN KEY (patologia) REFERENCES enfermedades(patologia);
+          ")
+```
+
+``{r, message=FALSE, warning=FALSE}
+dbExecute(con, "
+ALTER TABLE cadena_arn
+  ADD CONSTRAINT fk_arn_codon
+  FOREIGN KEY (codón) REFERENCES codones(codon);
+          ")
+`
+
 ## PREGUNTAS
 Recordemos las referencias ya creadas
 ```{r, warning=FALSE, message=FALSE}

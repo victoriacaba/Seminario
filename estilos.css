@@ -26,13 +26,14 @@ body {
 /* ==========================================================================
    Contenedor principal
    ========================================================================== */
-.main-container {
+/*.main-container {
   background: rgba(255, 255, 255, 0.92);
   padding: clamp(1rem, 3vw, 1.5rem) clamp(1rem, 4vw, 2rem);
   margin-block: 1.25rem;
   border-radius: var(--radio);
   box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
 }
+*/
 
 /* ==========================================================================
    Títulos
@@ -115,4 +116,27 @@ table:not(.sourceCode) {
 .code-folding-btn:focus {
   background: var(--color-texto);
   color: #fff;
+}
+.main-container {
+  max-width: 1400px !important;   /* más ancho */
+  width: 95%;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 20px 30px;
+  margin: 20px auto;
+  border-radius: 8px;
+}
+table {
+  width: 100% !important;
+  table-layout: auto;
+}
+
+th, td {
+  padding: 8px 12px !important;
+  white-space: nowrap;
+}
+
+/* Tablas interactivas de DT */
+.dataTables_wrapper {
+  width: 100%;
+  overflow-x: auto;   /* scroll horizontal en vez de apretar */
 }
